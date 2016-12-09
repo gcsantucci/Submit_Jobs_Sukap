@@ -26,7 +26,7 @@ params = [
     'path',
 ]
 
-default_card = '/home/santucci/PDK/tests/parameters.card'
+default_card = '/home/santucci/PDK/submit_jobs/parameters.card'
 
 def get_params(card):
     if card == 'd':

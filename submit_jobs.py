@@ -45,13 +45,8 @@ def send_jobs(card):
 
 def main():
     card = hf.get_card()
-    run = raw_input('\nIf this card is correct and you wanna proceed enter [y],\notherwise type [n]:\n')
-    if run == 'y':
-        print('\nSending jobs! For progress, check log file on job directory.\n')
-        #send_jobs(card)
-    else:
-        print('\nUser chose not to proceed. Exiting...\n')
-        sys.exit(0)
+    print('\nSending jobs! For progress, check log file on job directory.\n')
+    #send_jobs(card)
         
 if __name__ == "__main__":
     main()

@@ -2,11 +2,42 @@
 
 import sys
 import os
+import getopt
 
 from parameters import default_card
 
+def usage():
+    print('''\nUsage:\n
+    python submit_jobs.py --card=d\n
+ if using the default card in this directory: parameters.card.
+ Otherwise:\n
+    python submit_jobs.py --card=full_path_to_card.
+\nExiting...''')
+
 def get_card():
-    card = raw_input('\nIf you are using the default parameters.card enter [d],\notherwise enter the full path for the card if not in this directory.\n')
+    try:
+        opts, args = getopt.gnu_getopt(sys.argv[1:],
+                                       'h',
+                                       ['help', 'card='])
+    except getopt.GetoptError, err:
+        print str(err)
+        usage()
+        sys.exit(2)
+        
+    card = None
+    if len(opts) == 0:
+        usage()
+        sys.exit(0)
+        
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage()
+            sys.exit(0)
+        elif opt in ('--card'):
+            card = arg
+        else:
+            assert False, 'unhandled option' + opt
+
     if card == 'd':
         card = default_card
     is_card(card)
