@@ -1,0 +1,35 @@
+# Here are the parameters for running the jobs. The number of subjobs per job,
+# and the number of events to run per job. For PDK MC tipically 
+# nsubjobs=200 and nevents=500 for 100,000 events.
+# For atm nu MC: nsubjobs=55 and nevents=100
+
+nsubjobs = 55
+nevents = 100
+
+# Enter the full path where the files are located:
+filespath = /disk2/atmpd5/sk4_dst/apr16/fc_mc/zbs_fQv5r0_ntag16c/
+
+# Enter the job name here:
+jobname = atm_500years_test
+
+# Enter the number of input files you wanna run on:
+numFiles = 2
+
+# Enter the number of files to be skipped:
+numskip = 1
+
+# Enter the last file you wanna run:
+endfile = 2
+
+# Things we don't normally change:
+
+# The path where the jobs are gonna be written:
+path = /disk2/usr5/santucci/PDK/MC_events/
+
+# The maximum number of jobs to run:
+MaxNJobs = 200
+
+# The time (in minutes) to wait for jobs to be finished 
+# in case you reach the max # of jobs:
+time_to_sleep = 20
+
