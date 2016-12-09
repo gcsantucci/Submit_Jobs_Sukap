@@ -7,12 +7,14 @@ import getopt
 from parameters import default_card
 
 def usage():
-    print('''\nUsage:\n
-    python submit_jobs.py --card=d\n
- if using the default card in this directory: parameters.card.
- Otherwise:\n
-    python submit_jobs.py --card=full_path_to_card.
-\nExiting...''')
+    usage_message = '''
+Usage:\n    
+    python submit_jobs.py --card=d\n     
+ if using the default card in this directory: parameters.card.        
+ Otherwise:\n           
+    python submit_jobs.py --card=full_path_to_card.   
+\nExiting...'''
+    print(usage_message)
 
 def get_card():
     try:
