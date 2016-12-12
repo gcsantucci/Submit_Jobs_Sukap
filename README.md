@@ -17,3 +17,6 @@ python submit_jobs.py --card=[1]
 
 [1]: If using the default card in this directory (parameters.card), just enter d.
 To use a different card, enter its name.card, if not in this directory, enter its full path.
+
+
+*** Explicar screen!!

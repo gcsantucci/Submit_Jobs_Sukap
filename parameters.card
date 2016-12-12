@@ -3,33 +3,51 @@
 # nsubjobs=200 and nevents=500 for 100,000 events.
 # For atm nu MC: nsubjobs=55 and nevents=100
 
+# Enter the number of input files you wanna run on:
+numfiles = 2
+
+#Explicar como nevents*nsubjobs = total events in 1 input file!
+# Enter the number of files you want to split:
 nsubjobs = 55
+
+# ...
 nevents = 100
 
-# Enter the full path where the files are located:
-filespath = /disk2/atmpd5/sk4_dst/apr16/fc_mc/zbs_fQv5r0_ntag16c/
+# Enter the full path where the input files are located:
+# Explicar que somente input files podem estar ali.
+inpath = /disk2/atmpd5/sk4_dst/apr16/fc_mc/zbs_fQv5r0_ntag16c/
+
+# Enter the input files type - .zbs for zebra files or .root for root files:
+ext = .zbs
+
+# Enter the name of the directory where the output files will be written:
+outdirname = atm_500years_test
 
 # Enter the job name here:
-jobname = atm_500years_test
+jobname = test
 
-# Enter the number of input files you wanna run on:
-numFiles = 2
-
-# Enter the number of files to be skipped:
-numskip = 1
-
-# Enter the last file you wanna run:
-endfile = 2
+# email....
+email = gabrielsantucci@gmail.com
 
 # Things we don't normally change:
 
-# The path where the jobs are gonna be written:
-path = /disk2/usr5/santucci/PDK/MC_events/
+# In case only a subset of files are to be analyzed, specify the parameters here:
+# Enter the number of the first input file (in case there are files to be skipped):
+startfile = -1
 
-# The maximum number of jobs to run:
-MaxNJobs = 200
+# The path where the output files will be written:
+outpath = /disk2/usr5/santucci/PDK/MC_events/
+
+# If this is a new job (its directory does not exist yet) enter new. If a directory 
+# the jobname already exists enter old:
+# Explicar melhor
+newjob = new
+
+# The maximum number of jobs to run (-1 for sending all jobs without restriction):
+maxjobs = 200
 
 # The time (in minutes) to wait for jobs to be finished 
 # in case you reach the max # of jobs:
-time_to_sleep = 20
+# check.....
+sleeptime = 20
 

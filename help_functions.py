@@ -3,17 +3,21 @@
 import sys
 import os
 import getopt
+import shutil
 
 from parameters import default_card
+
+def call_exit():
+    print('Exiting...')
+    sys.exit(0)
 
 def usage():
     usage_message = '''
 Usage:\n    
-    python submit_jobs.py --card=d\n     
+    python submit_jobs.py --card=d (or parameters.card)\n     
  if using the default card in this directory: parameters.card.        
  Otherwise:\n           
-    python submit_jobs.py --card=full_path_to_card.   
-\nExiting...'''
+    python submit_jobs.py --card=full_path_to_card.'''
     print(usage_message)
 
 def get_card():
@@ -29,18 +33,18 @@ def get_card():
     card = None
     if len(opts) == 0:
         usage()
-        sys.exit(0)
+        call_exit()
         
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
-            sys.exit(0)
+            call_exit()
         elif opt in ('--card'):
             card = arg
         else:
             assert False, 'unhandled option' + opt
 
-    if card == 'd':
+    if card == 'd' or card == 'parameters.card':
         card = default_card
     is_card(card)
     return card
@@ -50,11 +54,54 @@ def is_card(card):
     if os.path.isfile(card):
         print('\nUsing card: {0}'.format(card))
     else:
-        print('Parameters card does not exist!\n Exiting...')
-        sys.exit(0)
+        print('Parameters card does not exist!')
+        call_exit()
 
-def getinfile(i):
-    return '/disk/usr3/santucci/PDK/MC_events/pdk_vectors/skdetsim/pdk_100k_sk.zbs'
+def check_dirs(newjob, jobpath, nfiles, nsubjobs):
+    if os.path.isdir(jobpath):
+        print('Dir {0} already exists.'.format(jobpath))
+        if newjob == 'new':
+            print('But user set job as new.')
+            call_exit()
+        elif newjob == 'old':
+            print('Using the same directory.')
+        elif newjob == 'over':
+            print('Removing old dir and creating new.')
+            shutil.rmtree(jobpath)
+        else:
+            print('Enter [new], [old] or [over] for newjob in the parameters.card')
+            call_exit()
+    else:
+        print('Dir {0} does not exist.'.format(jobpath))
+        if newjob == 'new':
+            print('Creating necessary directory structure')
+            make_dirs(jobpath, nfiles, nsubjobs)
+        elif newjob == 'old' or newjob == 'over':
+            print('Output directory was not found:\n{0}'.format(jobpath))
+            print('Change parameters.card.')
+            call_exit()
+        else:
+            print('Enter [new], [old] or [over] for newjob in the parameters.card')
+            call_exit()
+
+def make_dirs(jobpath, nfiles, start, end, nsubjobs):
+    os.mkdir(jobpath)    
+    for i in xrange(nfiles):
+        ijob = os.path.join(jobpath, str(i))
+        os.mkdir(ijob)
+        for j in xrange(nsubjobs):
+            isub = os.path.join(ijob, str(j))
+            os.mkdir(isub)
+
+def is_dir(jobpath):
+    if not os.path.isdir(jobpath):
+        print('Output directory was not found:\n{0}'.format(jobpath))
+        call_exit()
+
+def number_jobs(maxjobs, nsubjobs, numFiles):
+    if maxjobs == -1:
+        maxjobs = nsubjobs * numFiles
+    return maxjobs
 
 def WriteSKBash(cmdstr, jobdir):
     name = jobdir + 'NQSjob_nglogL.csh'
@@ -71,17 +118,7 @@ def WriteSKBash(cmdstr, jobdir):
     bash_file.write(cmdstr)
     bash_file.write(os.linesep)
     bash_file.close()
-    return
 
-def getsubjob(path, jobname, ijob, isub):
-
-    job = str(jobname) + '_' + str(ijob)
-    jobdir = path + str(jobname) + '/' + job + '/'
-    subjob = job + "_" + str(isub)
-    subjobdir = jobdir + 'subjob_' + str(isub) + '/'
-    #os.mkdir(subjobdir)
-    return subjobdir + subjob, subjobdir
-    
 def runfiTQun(i, jobname, path, isub,nevents):
 
     infile = getinfile(isub)
@@ -99,11 +136,3 @@ def runfiTQun(i, jobname, path, isub,nevents):
         
     runcommand = 'qsub -q all -eo -lm 3gb -o ' + subjobdir + 'out_nglogL.log '  + subjobdir + 'NQSjob_nglogL.csh'
     os.system(runcommand)
-
-    return
-
-def mkjobdir(path, jobname, ijob):
-    job = str(jobname) + '_' + str(ijob)
-    ijobdir = path + str(jobname) + '/' + job + '/'
-    os.mkdir(ijobdir)
-    return
