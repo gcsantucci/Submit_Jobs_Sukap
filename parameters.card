@@ -14,10 +14,10 @@ ext = .zbs
 nfiles = 2
 
 # Enter the first input file number:
-startfile = 0
+startfile = 100
 
 # Enter the number of parts in which each input file will be divided:
-nsubjobs = 55
+nsubjobs = 2
 
 # Enter the number of events in each sub part:
 nevents = 100
@@ -26,10 +26,10 @@ nevents = 100
 outpath = /disk2/usr5/santucci/PDK/MC_events/
 
 # Enter the name of the directory where the output files will be written:
-outdirname = atm_500years_test
+outdirname = submit_test
 
 # Enter new, same or over for the type of the output directory:
-outdirtype = new
+outdirtype = over
 
 # Enter the common name for the output files:
 jobname = test
@@ -49,8 +49,8 @@ queue = all
 # Enter the name of the user in the queue:
 user = santucci
 
-# The maximum number of jobs the user can having running in the queue (-1 for sending all jobs without restriction):
-maxjobs = 200
+# The maximum number of jobs running in the queue simultaneously (-1 for sending all jobs without restriction):
+maxjobs = 205
 
 # The duration of time (minutes) to wait until a job is finished in case the maxjobs has been reached.
 sleeptime = 20

@@ -15,46 +15,40 @@ intparams = [
     'startfile', 
     'nsubjobs',
     'nevents',
-    'maxjobs',
     'emailrate',
     'subrate',
+    'maxjobs',
     'sleeptime'
 ]
 
-params = [
+strparams = [
     'inpath',
     'ext',
+    'outpath',
     'outdirname', 
     'outdirtype', 
     'jobname',
     'email',
     'queue',
-    'user',
-    'outpath',
+    'user'
 ]
 
 default_card = '/home/santucci/PDK/submit_jobs/parameters.card'
 
 def get_params(card):
-    if card == 'd':
-        params_file = default_card
-    else:
-        params_file = card
-    infile = open(params_file, 'r')
+    infile = open(card, 'r')
     return_params = []
     return_intparams = []
     for line in infile:
         line = line.strip().split()
         if '#' in line:
             continue
-        for param in params:
+        for param in strparams:
             if param in line:
                 return_params.append(line[-1])
                 continue
-        for intparam in intparams:
-            if intparam in line:
+        for param in intparams:
+            if param in line:
                 return_intparams.append(int(line[-1]))
                 continue
-    print(return_params)
-    print(return_intparams)
     return return_params, return_intparams

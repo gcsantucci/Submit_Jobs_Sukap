@@ -19,45 +19,44 @@ from parameters import get_params
 def send_jobs(card):
     strparams, intparams = get_params(card)
 
-    nfiles, startfile, nsubjobs, nevents, maxjobs, emailrate, subrate, sleeptime = intparams
-    inpath, ext, outdirname, outdirtype, jobname, email, queue, user, outpath = strparams
+    nfiles, startfile, nsubjobs, nevents, emailrate, subrate, maxjobs, sleeptime = intparams
+    inpath, ext, outpath, outdirname, outdirtype, jobname, email, queue, user = strparams
 
     maxjobs = hf.number_jobs(maxjobs, nsubjobs, nfiles)
 
-    queue_log = os.path.join(jobpath, '/{0}_njobs.log'.format(queue))
-    queue_cmd = 'qstat {0} | grep {1} | wc -l > ' + queue_log
-    email_cmd = 'echo "Sent infile {0} to queue." | mailx -s "Job Sent" {1}'
-    email_sub ='echo "Sent infile {0}  - subjob {1} - to queue." | mailx -s "Job Sent" {2}'
-
-    infiles = hf.get_infiles(inpath, ext, inname, startfile, nfiles)
+    infiles = hf.get_infiles(inpath, ext, startfile, nfiles)
 
     jobpath = os.path.join(outpath, outdirname)
-    hf.check_dirs(outdirtype, jobpath, len(infiles), nsubjobs)
+    hf.check_dirs(outdirtype, jobpath, nfiles, startfile, nsubjobs)
 
     logfile = os.path.join(jobpath, jobname + '.log')
-    logging.basicConfig(filename=logfile, level=logging.INFO)
-    print('Log file:\n{0}'.format(logfile))
+    logging.basicConfig(filename=logfile, format='%(message)s', level=logging.INFO)
+    print('\nLog file:\n{0}'.format(logfile))
 
-    for i, infile in infiles:
-        logging.info('Input file number: {0}:\n{1}'.format(i, infile))
+    queue_log = os.path.join(jobpath, '{0}_njobs.log'.format(queue))
+    queue_cmd = 'qstat {0} | grep {1} | wc -l > ' + queue_log
+    email_cmd = 'echo "Sent infile {0} {1} to queue." | mailx -s "Job Sent" {2}'
+    email_sub ='echo "Sent infile {0} {1}  - subjob {2} - to queue." | mailx -s "Job Sent" {3}'
+
+    for i, infile in enumerate(infiles, start=startfile):
+        logging.info('Input file {0}: {1}'.format(i, infile))
         isub = 0
         while isub < int(nsubjobs):
+            logging.info('Subjob = {0}'.format(isub))
             os.system(queue_cmd.format(queue, user))
             with open(queue_log, 'r') as njobslog:
                 currentjobs = int(njobslog.read().splitlines()[0])
-            
             if currentjobs < maxjobs:
                 #hf.runfiTQun(ijob, jobname, path, isub,nevents)
-                #check if -1 is needed or not!!!
-                if email and subrate > 0 and isub % subrate == subrate:
-                    os.system(email_sub.format(infile, isub, email))
+                if email and subrate > 0 and isub % subrate == subrate-1:
+                    os.system(email_sub.format(i, infile, isub, email))
                 isub += 1
             else:
                 logging.info(time.asctime( time.localtime(time.time()) ))
                 logging.info('sleeping {0} minutes.'.format(sleeptime))
                 time.sleep(60*sleeptime)
-        if email and i % emailrate == emailrate:
-                    os.system(email_cmd.format(infile, email))
+        if email and i % emailrate == emailrate-1:
+            os.system(email_cmd.format(i, infile, email))
     logging.info('Sent all the jobs!')
 
 def main():

@@ -121,6 +121,6 @@ sleeptime = 20
 
 ## Updates:
 
-- Dec 11th 2016: Module runs fiTQun only on zbs and root files.
+- Dec 11th 2016: Module runs fiTQun on zbs and root files.
 
 *** Explicar screen!!
