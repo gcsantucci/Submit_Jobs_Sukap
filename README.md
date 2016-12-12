@@ -12,6 +12,8 @@ one will change the parameters.py module to read new parameters from parameters.
 The help_function.py module provides useful functions to build the directories where the output files
 will be written. These should not be modified by the user.
 
+In case of any questions or concerns, send an email to Gabriel Santucci at gabrielsantucci@gmail.com .
+
 ## Usage:
 python submit_jobs.py --card=[1]
 
@@ -47,7 +49,7 @@ nfiles = 500
 ### startfile:
 The number of the first file to be used as input. In case the user wants to run 100 files that range from 200 to 299, just set nfiles to 100 and startfile = 200. Ex:
 
-startfile = 0
+startfile = 200
 
 ### nsubjobs:
 The number of files each input file is to be divided. Ex:
@@ -55,7 +57,7 @@ The number of files each input file is to be divided. Ex:
 nsubjobs = 50
 
 ### nevents:
-The number of events each sub part will contain. For example, if the inout file has 5000 events and the user wants to divide it in 50 parts, each part will have 100 events. Ex:
+The number of events each sub part will contain. For example, if the input file has 5000 events and the user wants to divide it in 50 parts, each part will have 100 events. Ex:
 
 nevents = 100
 
@@ -70,9 +72,10 @@ The name of the directory where the output files will be written. This directory
 outdirname = test
 
 ### outdirtype:
-- If this is a new job and the output direcory does not exist, set this to new and the directory structure will be created: outdirtype = new
-- If the directory already exists and contains files but the user wants to write the output files of these jobs using the same directory set this to same: outdirtype = same
-- If the directory exists but it is to be overwritten: outdirtype = over
+new, same or over:
+- If this is a new job and the output directory does not exist, set this to 'new' and the directory structure will be created: outdirtype = new
+- If the directory already exists and contains files but the user wants to write the output files of these jobs using the same directory, set this to 'same': outdirtype = same
+- If the directory exists but it is to be overwritten, set it to 'over': outdirtype = over
 
 outdirtype = new
 
@@ -82,9 +85,9 @@ The common name all the output files will have. Ex:
 jobname = test
 
 ### email:
-The user's email in case an email is to be sent after the jobs are sent to the queue. In case the user does not want to receive emails, just set it to None or False. Ex:
+The user's email in case an email is to be sent after the jobs are in the queue. In case the user does not want to receive emails, just set it to None or False. Ex:
 
-email = user@domain.com
+email = user@domain.com or email = None
 
 ### emailrate:
 The rate at which emails will be sent when n = emailrate input files where sent. Ex:
