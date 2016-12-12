@@ -110,6 +110,12 @@ def get_infiles(inpath, ext, start, nfiles):
     infiles = [infile for infile in sorted(os.listdir(inpath)) if infile.endswith(ext)]
     return infiles[start:end]
 
+def check_njobs(cmd, log):
+    os.system(cmd)
+    with open(log, 'r') as njobslog:
+        njobs = int(njobslog.read().splitlines()[0])
+    return njobs
+
 def WriteSKBash(cmdstr, jobdir):
     name = jobdir + 'NQSjob_nglogL.csh'
     errstr = '#@$-o ' + jobdir + 'test.err'
