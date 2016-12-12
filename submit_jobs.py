@@ -42,10 +42,11 @@ def send_jobs(card):
         logging.info('Input file {0}: {1}'.format(i, infile))
         isub = 0
         while isub < int(nsubjobs):
+            print isub
             logging.info('Subjob = {0}'.format(isub))
             currentjobs = hf.check_njobs(queue_cmd, queue_log)
             if currentjobs < maxjobs:
-                #hf.runfiTQun(ijob, jobname, path, isub,nevents)
+                #hf.runfiTQun(ijob, jobname, path, isub, nevents)
                 if email and subrate > 0 and isub % subrate == subrate-1:
                     os.system(email_sub.format(i, infile, isub, email))
                 isub += 1

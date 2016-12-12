@@ -107,7 +107,7 @@ def number_jobs(maxjobs, nsubjobs, nfiles):
 def get_infiles(inpath, ext, start, nfiles):
     end = start + nfiles
     jobs = sorted(os.listdir(inpath))
-    infiles = [infile for infile in sorted(os.listdir(inpath)) if infile.endswith(ext)]
+    infiles = [infile for infile in jobs if infile.endswith(ext)]
     return infiles[start:end]
 
 def check_njobs(cmd, log):
