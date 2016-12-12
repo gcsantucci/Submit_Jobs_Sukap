@@ -11,10 +11,10 @@ Dec 2016
 '''
 
 intparams = [
-    'nsubjobs',
-    'nevents',
     'nfiles',
     'startfile', 
+    'nsubjobs',
+    'nevents',
     'maxjobs',
     'emailrate',
     'subrate',
@@ -25,12 +25,12 @@ params = [
     'inpath',
     'ext',
     'outdirname', 
+    'outdirtype', 
     'jobname',
     'email',
     'queue',
     'user',
     'outpath',
-    'newjob', 
 ]
 
 default_card = '/home/santucci/PDK/submit_jobs/parameters.card'

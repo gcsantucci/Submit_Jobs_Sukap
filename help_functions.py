@@ -57,31 +57,31 @@ def is_card(card):
         print('Parameters card does not exist!')
         call_exit()
 
-def check_dirs(newjob, jobpath, nfiles, nsubjobs):
+def check_dirs(dirtype, jobpath, nfiles, nsubjobs):
     if os.path.isdir(jobpath):
         print('Dir {0} already exists.'.format(jobpath))
-        if newjob == 'new':
+        if dirtype == 'new':
             print('But user set job as new.')
             call_exit()
-        elif newjob == 'old':
+        elif dirtype == 'same':
             print('Using the same directory.')
-        elif newjob == 'over':
+        elif dirtype == 'over':
             print('Removing old dir and creating new.')
             shutil.rmtree(jobpath)
         else:
-            print('Enter [new], [old] or [over] for newjob in the parameters.card')
+            print('Enter [new], [same] or [over] for dirtype in the parameters.card')
             call_exit()
     else:
         print('Dir {0} does not exist.'.format(jobpath))
-        if newjob == 'new':
+        if dirtype == 'new':
             print('Creating necessary directory structure')
             make_dirs(jobpath, nfiles, nsubjobs)
-        elif newjob == 'old' or newjob == 'over':
+        elif dirtype == 'same' or dirtype == 'over':
             print('Output directory was not found:\n{0}'.format(jobpath))
             print('Change parameters.card.')
             call_exit()
         else:
-            print('Enter [new], [old] or [over] for newjob in the parameters.card')
+            print('Enter [new], [same] or [over] for dirtype in the parameters.card')
             call_exit()
 
 def make_dirs(jobpath, nfiles, start, end, nsubjobs):
@@ -102,6 +102,13 @@ def number_jobs(maxjobs, nsubjobs, numFiles):
     if maxjobs == -1:
         maxjobs = nsubjobs * numFiles
     return maxjobs
+
+def get_infiles(inpath, ext, inname, start, nfiles):
+    end = start + nfiles
+    jobs = sorted(os.listdir(inpath))
+    infiles = [infile for infile in sorted(os.listdir(inpath)) if infile.endswith(ext)]
+    for i, infile in enumerate(infiles[start:end], start=start):
+        yield i, infile
 
 def WriteSKBash(cmdstr, jobdir):
     name = jobdir + 'NQSjob_nglogL.csh'
