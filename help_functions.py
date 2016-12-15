@@ -179,6 +179,7 @@ def get_email(isub=False):
 def send_email(email):
     os.system(email)
 
-def rm_qsublog(qsubtemp):
-    log_msg('Removing temporary log file...')
+def rm_temp(qsubtemp, queuetemp):
+    log_msg('\nRemoving temporary log files...')
     os.remove(qsubtemp)
+    os.remove(queuetemp)

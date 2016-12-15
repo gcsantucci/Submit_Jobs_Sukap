@@ -24,12 +24,12 @@ def send_jobs(card):
     # Create directory structure and log file:
     jobpath = hf.join_path(outpath, outdirname)
     logfile = hf.join_path(jobpath, jobname + '.log')
-    qsublog = hf.join_path(jobpath, 'qsub_jobs.log')
-    qsubtemp = hf.join_path(jobpath, 'qsub_temp.log')
+    qsublog = hf.join_path(jobpath, jobname+'_running_jobs.log')
+    qsubtemp = hf.join_path(jobpath, jobname+'qsub.temp')
     hf.check_dirs(outdirtype, jobpath, nfiles, startfile, nsubjobs, logfile, card)
 
-    queue_log = hf.join_path(jobpath, 'njobs_{0}.txt'.format(queue))
-    queue_cmd = ('qstat {0} | grep {1} | wc -l > ' + queue_log).format(queue, user)
+    queuetemp = hf.join_path(jobpath, 'njobs_{0}.txt'.format(queue))
+    queue_cmd = ('qstat {0} | grep {1} | wc -l > ' + queuetemp).format(queue, user)
 
     infiles = hf.get_infiles(inpath, ext, startfile, nfiles)
     for i, infile in enumerate(infiles, start=startfile):
@@ -37,7 +37,7 @@ def send_jobs(card):
         isub = 0
         while isub < int(nsubjobs):
             hf.log_msg(hf.get_time(mode='isub').format(isub))
-            currentjobs = hf.check_njobs(queue_cmd, queue_log)
+            currentjobs = hf.check_njobs(queue_cmd, queuetemp)
             if currentjobs < maxjobs:
                 sendfile, jobfile = bf.prepare_job(infile, jobpath, jobname, i, isub, nevents, runfile, outfiles)
                 bf.send_job(queue, jobfile, sendfile, qsubtemp)
@@ -50,7 +50,7 @@ def send_jobs(card):
                 time.sleep(60*sleeptime)
         if email and i % emailrate == emailrate-1:
             hf.send_email(hf.get_email().format(i, infile, email))
-    hf.rm_qsublog(qsubtemp)
+    hf.rm_temp(qsubtemp, queuetemp)
     hf.log_msg(hf.get_time(mode='end').format(queue, user))
 
 def main():
