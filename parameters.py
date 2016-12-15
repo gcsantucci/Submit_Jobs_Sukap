@@ -30,7 +30,8 @@ strparams = [
     'jobname',
     'email',
     'queue',
-    'user'
+    'user',
+    'runfile'
 ]
 
 default_card = '/home/santucci/PDK/submit_jobs/parameters.card'

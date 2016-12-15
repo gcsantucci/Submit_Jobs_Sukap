@@ -1,56 +1,58 @@
 # Modify the following parameters before sending the jobs to the queue:
 # The detailed description of all the parameters can be found in the README.md file,
-# or in the package's github repository:
+# or in the github repository:
 # https://github.com/gcsantucci/Submit_Jobs_Sukap
 
-
-# Enter the full path where the input files are located:
+# Full path where the input files are located:
 inpath = /disk2/atmpd5/sk4_dst/apr16/fc_mc/zbs_fQv5r0_ntag16c/
 
-# Enter the type of the input files - .zbs for zebra files or .root for ROOT files:
+# Type of the input files - .zbs for zebra files or .root for ROOT files:
 ext = .zbs
 
-# Enter the number of input files you wanna run on:
-nfiles = 2
+# Number of input files you wanna run on:
+nfiles = 1
 
-# Enter the first input file number:
+# First input file number:
 startfile = 100
 
-# Enter the number of parts in which each input file will be divided:
+# Number of parts in which each input file will be divided (at least 1):
 nsubjobs = 2
 
-# Enter the number of events in each sub part:
-nevents = 100
+# Number of events in each sub part:
+nevents = 1
 
-# The path where the output files will be written:
+# Full path where the output files will be written:
 outpath = /disk2/usr5/santucci/PDK/MC_events/
 
-# Enter the name of the directory where the output files will be written:
-outdirname = submit_test
+# Name of the directory where the output files will be written:
+outdirname = test_submit
 
 # Enter new, same or over for the type of the output directory:
-outdirtype = over
+outdirtype = new
 
-# Enter the common name for the output files:
+# Common name for the output files:
 jobname = test
 
-# Enter the user's email:
+# User's email:
 email = gabrielsantucci@gmail.com
 
-# Enter the rate at which emails will be sent:
-emailrate = 25
+# Rate at which emails will be sent:
+emailrate = 1
 
-# Enter the rate of emails for every input file at subpart = subrate:
-subrate = 0
+# Rate of emails for every input file at subpart = subrate:
+subrate = 1
 
-# Enter the queue name to send the jobs:
+# Queue name to send the jobs:
 queue = all
 
-# Enter the name of the user in the queue:
+# Name of the user in the queue:
 user = santucci
 
-# The maximum number of jobs running in the queue simultaneously (-1 for sending all jobs without restriction):
+# Maximum number of jobs running in the queue simultaneously (-1 for sending all jobs without restriction):
 maxjobs = 205
 
-# The duration of time (minutes) to wait until a job is finished in case the maxjobs has been reached.
+# Duration of time (minutes) to wait until a job is finished in case the maxjobs has been reached:
 sleeptime = 20
+
+# Run file :
+runfile = /home/santucci/PDK/submit_jobs/RunJob.csh

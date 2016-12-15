@@ -1,5 +1,5 @@
 #!/usr/bin/python                                                                                               
-
+import help_functions as hf
 import os
 
 def get_outpath(jobpath, i, isub):
@@ -8,18 +8,18 @@ def get_outpath(jobpath, i, isub):
 def get_outfile(jobpath, jobname, i, isub):
     return os.path.join(jobpath, '{0}/{1}/{2}_{0}_{1}'.format(i, isub, jobname))
 
-def get_outfiles(outfile, softwares):
+def get_outfiles(outfile):
     outfiles = []
-    outfiles.append(outfile + '_ap_fq.zbs')
-    outfiles.append(outfile + '_ap_fq.hbk')
+    outfiles.append(outfile + '_fq.zbs')
+    outfiles.append(outfile + '_fq.hbk')
     outfiles.append(outfile + '_miura.hbk')
     return ' '.join(outfiles)
 
-def get_bashfile(jobpath, jobname, softwares):
-    run_file = os.path.join(jobpath, jobname + '.csh')
-    with open(run_file, 'w') as rfile:
-        rfile.write('this is a test on the main run file!')
-    return run_file
+def is_runfile(runfile):
+    if os.path.isfile(runfile):
+        return runfile
+    else:
+        hf.call_exit(1)
 
 def write_sendjob(outpath, runcmd):
     errstr = '#@$-o ' + outpath + '/test.err'
@@ -34,18 +34,18 @@ def write_sendjob(outpath, runcmd):
         bash.write(os.linesep)
     return send_file
 
-def prepare_job(infile, jobpath, jobname, i, isub, nevents, softwares=None):
+def prepare_job(infile, jobpath, jobname, i, isub, nevents, runfile):
     outpath = get_outpath(jobpath, i, isub)
     outfile = get_outfile(jobpath, jobname, i, isub)
-    outfiles = get_outfiles(outfile, softwares)
-    bashfile = get_bashfile(jobpath, jobname, softwares)
+    outfiles = get_outfiles(outfile)
+    run_file = is_runfile(runfile)
     skip = isub*nevents
-    sendcmd = 'source {0} {1} {2} {3}'.format(bashfile, outfiles, nevents, skip)
-    send_file = write_sendjob(outpath, sendcmd)
-    return send_file
+    sendcmd = 'source {0} {1} {2} {3} {4}'.format(run_file, infile, nevents, skip, outfiles)
+    sendfile = write_sendjob(outpath, sendcmd)
+    jobfile = os.path.join(outpath, jobname+'.log')
+    return sendfile, jobfile
 
-def send_job(queue, joblog, sendfile):
-    runcmd = 'qsub -q {0} -eo -lm 3gb -o {1} {2}'.format(queue, joblog, sendfile)
+def send_job(queue, jobfile, sendfile):
+    runcmd = 'qsub -q {0} -eo -lm 3gb -o {1} {2}'.format(queue, jobfile, sendfile)
     print runcmd
-    call_exit(0)
     os.system(runcmd)
