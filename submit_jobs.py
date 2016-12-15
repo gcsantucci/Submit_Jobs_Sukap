@@ -47,7 +47,7 @@ def send_jobs(card):
                 isub += 1
             else:
                 hf.log_msg(hf.get_time(mode='sleep').format(maxjobs, sleeptime))
-                time.sleep(60*sleeptime)
+                hf.sleep(60*sleeptime)
         if email and i % emailrate == emailrate-1:
             hf.send_email(hf.get_email().format(i, infile, email))
     hf.rm_temp(qsubtemp, queuetemp)

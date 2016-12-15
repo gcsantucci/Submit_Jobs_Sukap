@@ -91,6 +91,7 @@ def check_dirs(dirtype, jobpath, nfiles, start, nsubjobs, logfile, card):
             call_exit(1)
         elif dirtype == 'same':
             msg += 'Using the same directory.'
+            make_dirs(jobpath, nfiles, start, nsubjobs, same=True)
         elif dirtype == 'over':
             shutil.rmtree(jobpath)
             make_dirs(jobpath, nfiles, start, nsubjobs)
@@ -118,14 +119,17 @@ def check_dirs(dirtype, jobpath, nfiles, start, nsubjobs, logfile, card):
             print(msg + 'Enter [new], [same] or [over] for dirtype in the parameters.card')
             call_exit(0)
 
-def make_dirs(jobpath, nfiles, start, nsubjobs):
-    os.mkdir(jobpath)    
+def make_dirs(jobpath, nfiles, start, nsubjobs, same=False):
+    if not same:
+        os.mkdir(jobpath)    
     for i in xrange(start, start+nfiles):
         ijob = os.path.join(jobpath, str(i))
-        os.mkdir(ijob)
+        if not os.path.isdir(ijob):
+            os.mkdir(ijob)
         for j in xrange(nsubjobs):
             isub = os.path.join(ijob, str(j))
-            os.mkdir(isub)
+            if not os.path.isdir(isub):
+                os.mkdir(isub)
 
 def is_runfile(runfile):
     if not os.path.isfile(runfile):
@@ -183,3 +187,6 @@ def rm_temp(qsubtemp, queuetemp):
     log_msg('\nRemoving temporary log files...')
     os.remove(qsubtemp)
     os.remove(queuetemp)
+
+def sleep(sleeptime):
+    time.sleep(sleeptime)
