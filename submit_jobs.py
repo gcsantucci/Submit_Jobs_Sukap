@@ -19,11 +19,11 @@ def send_jobs(card):
     maxjobs = hf.number_jobs(maxjobs, nsubjobs, nfiles)
 
     # Create directory structure and log file:
-    jobpath = os.path.join(outpath, outdirname)
-    logfile = os.path.join(jobpath, jobname + '.log')
+    jobpath = hf.join_path(outpath, outdirname)
+    logfile = hf.join_path(jobpath, jobname + '.log')
     hf.check_dirs(outdirtype, jobpath, nfiles, startfile, nsubjobs, logfile, card)
 
-    queue_log = os.path.join(jobpath, 'currentjobs_{0}.log'.format(queue))
+    queue_log = hf.join_path(jobpath, 'currentjobs_{0}.log'.format(queue))
     queue_cmd = ('qstat {0} | grep {1} | wc -l > ' + queue_log).format(queue, user)
 
     infiles = hf.get_infiles(inpath, ext, startfile, nfiles)

@@ -61,11 +61,14 @@ def is_card(card):
         print('Parameters card does not exist:\n{0}'.format(card))
         call_exit(0)
 
+def join_path(path, name):
+    return os.path.join(path, name)
+
 def start_log(logfile, card):
     log.basicConfig(filename=logfile, format='%(message)s', level=logging.ERROR)
-    hf.log_msg('Location of log file:\n{0}'.format(logfile))
-    hf.log_msg('Using card:\n{0}'.format(card))
-    hf.log_msg(hf.get_time(mode='start'))
+    log_msg('Location of log file:\n{0}'.format(logfile))
+    log_msg('Using card:\n{0}'.format(card))
+    log_msg(get_time(mode='start'))
 
 def log_msg(msg, error=False):
     print(msg)
@@ -137,9 +140,8 @@ def check_njobs(cmd, log):
     return njobs
 
 def get_time(mode=None, sub=False):
-    time = time.asctime( time.localtime(time.time()) )
-    cur_time = '\nCurrent time: {0}\n'.format(time)
-    msg = cur_time.format(time)
+    t0 = time.asctime( time.localtime(time.time()) )
+    msg = '\nCurrent time: {0}\n'.format(t0)
     if mode == 'start':
         msg += 'Starting submit_jobs.py'
     elif mode == 'file':
@@ -162,7 +164,7 @@ def get_email(isub=False):
     return email
 
 def send_email(email):
-    log.info(email)
+    log_msg(email)
     os.system(email)
 
 def WriteSKBash(cmdstr, jobdir):
