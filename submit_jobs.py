@@ -9,6 +9,7 @@ Dec 2016
 '''
 
 import help_functions as hf
+import bash_files as bf
 from parameters import get_params
 
 def send_jobs(card):
@@ -36,7 +37,7 @@ def send_jobs(card):
             hf.log_msg(hf.get_time(mode='isub').format(isub))
             currentjobs = hf.check_njobs(queue_cmd, queue_log)
             if currentjobs < maxjobs:
-                hf.prepare_job(infile, jobpath, jobname, i, isub, nevents, softwares=[])
+                bf.prepare_job(infile, jobpath, jobname, i, isub, nevents, softwares=[])
                 if email and subrate > 0 and isub % subrate == subrate-1:
                     hf.send_email(hf.get_email(isub=True).format(i, infile, isub, email))
                 isub += 1
