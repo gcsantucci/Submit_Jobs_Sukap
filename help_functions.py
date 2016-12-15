@@ -166,44 +166,57 @@ def get_time(mode=None):
 
 def get_email(isub=False):
     email = 'echo "Sent infile {0} {1} to queue." | mailx -s "Job Sent" {2}'
-    if email:
+    if isub:
         email ='echo "Sent infile {0} {1} - subjob {2} - to queue." | mailx -s "Job Sent" {3}'
     return email
 
 def send_email(email):
-    log_msg(email)
     os.system(email)
 
-def WriteSKBash(cmdstr, jobdir):
-    name = jobdir + 'NQSjob_nglogL.csh'
-    errstr = '#@$-o ' + jobdir + 'test.err'
-    outstr = '#@$-o ' + jobdir + 'test.out'
-    bash_file = open(name,'w')
-    bash_file.write("#!/bin/csh\n")
-    bash_file.write("# Batch mode using NQS\n\n")
-#    bash_file.write(outstr)
-#    bash_file.write(os.linesep)
-    bash_file.write(errstr)
-    bash_file.write(os.linesep)
-    bash_file.write(os.linesep)
-    bash_file.write(cmdstr)
-    bash_file.write(os.linesep)
-    bash_file.close()
+def get_outpath(jobpath, i, isub):
+    return os.path.join(jobpath, '{0}/{1}'.format(i, isub))
 
-def runfiTQun(i, jobname, path, isub,nevents):
+def get_outfile(jobpath, jobname, i, isub):
+    return os.path.join(jobpath, '{0}/{1}/{2}_{0}_{1}'.format(i, isub, jobname))
 
-    infile = getinfile(isub)
+def get_outfiles(outfile, softwares):
+    outfiles = []
+    outfiles.append(outfile + '_ap_fq.zbs')
+    outfiles.append(outfile + '_ap_fq.hbk')
+    outfiles.append(outfile + '_miura.hbk')
+    return ' '.join(outfiles)
 
-    subjob, subjobdir = getsubjob(path, jobname, i, isub)
+def get_bashfile(jobpath, jobname, softwares):
+    run_file = join_path(jobpath, jobname + '.csh')
+    with open(run_file, 'w') as rfile:
+        rfile.write('this is a test on the main run file!')
+    return run_file 
 
-    APfile = subjob + '_ap.zbs'
-    FQfile = subjob + '_ap_fq_nglogL.zbs'
-    HBKfile = subjob + '_ap_fq_nglogL.hbk'
-    miurahbk = subjob + '_miura.hbk'
+def write_sendjob(outpath, runcmd):
+    errstr = '#@$-o ' + outpath + '/test.err'
+    send_file = join_path(outpath, 'SendJob.csh')
+    with open(send_file, 'w') as bash:
+        bash.write('#!/bin/csh')
+        bash.write(' Batch mode using NQS\n\n')
+        bash.write(errstr)
+        bash.write(os.linesep)
+        bash.write(os.linesep)
+        bash.write(runcmd)
+        bash.write(os.linesep)
+    return send_file
+def prepare_job(infile, jobpath, jobname, i, isub, nevents, softwares=None):
+    outpath = get_outpath(jobpath, i, isub)
+    outfile = get_outfile(jobpath, jobname, i, isub)
+    outfiles = get_outfiles(outfile, softwares)
+    bashfile = get_bashfile(jobpath, jobname, softwares)
+    skip = isub*nevents
+    sendcmd = 'source {0} {1} {2} {3}'.format(bashfile, outfiles, nevents, skip)
+    send_file = write_sendjob(outpath, sendcmd)
+    return send_file
 
-    cmdstr = "source /home/santucci/PDK/pdk_nglogL/RunJob.csh " + APfile + " " + FQfile + " " + str(HBKfile)
-        
-    WriteSKBash(cmdstr, subjobdir)
-        
-    runcommand = 'qsub -q all -eo -lm 3gb -o ' + subjobdir + 'out_nglogL.log '  + subjobdir + 'NQSjob_nglogL.csh'
-    os.system(runcommand)
+def send_job(queue, joblog, sendfile):
+    runcmd = 'qsub -q {0} -eo -lm 3gb -o {1} {2}'.format(queue, joblog, sendfile)
+    print runcmd
+    call_exit(0)
+    os.system(runcmd)
+
