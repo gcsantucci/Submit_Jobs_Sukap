@@ -9,13 +9,12 @@ import logging
 
 from parameters import default_card
 
-log = logging
-
 def call_exit(islog=0):
     msg = 'Exiting...'
-    print(msg)
     if islog:
         log_msg(msg, error=True)
+    else:
+        print(msg)
     sys.exit(0)
 
 def usage():
@@ -65,7 +64,12 @@ def join_path(path, name):
     return os.path.join(path, name)
 
 def start_log(logfile, card):
-    log.basicConfig(filename=logfile, format='%(message)s', level=logging.ERROR)
+    if os.path.isfile(logfile):
+        print('This job already exists. Check log file:\n{0}'.format(logfile))
+        print('Change the jobname in the parameters card.')
+        call_exit(0)
+    logging.basicConfig(filename=logfile, filemode='w', format='%(message)s', level=logging.INFO)
+    log_msg(get_time(mode='time'))
     log_msg('Location of log file:\n{0}'.format(logfile))
     log_msg('Using card:\n{0}'.format(card))
     log_msg(get_time(mode='start'))
@@ -73,37 +77,38 @@ def start_log(logfile, card):
 def log_msg(msg, error=False):
     print(msg)
     if error:
-        log.error('Error!\n' + msg)
+        logging.error(msg)
     else:
-        log.info(msg)
+        logging.info(msg)
 
 def check_dirs(dirtype, jobpath, nfiles, start, nsubjobs, logfile, card):
     if os.path.isdir(jobpath):
-        start_log(logfile, card)
-        msg = 'Dir {0} already exists.\n'.format(jobpath)
+        msg = 'Directory {0} already exists.\n'.format(jobpath)
         if dirtype == 'new':
             msg += 'But user set job as new.'
+            start_log(logfile, card)
             log_msg(msg)
             call_exit(1)
         elif dirtype == 'same':
             msg += 'Using the same directory.'
-            log_msg(msg)
         elif dirtype == 'over':
-            msg += 'Removing old dir and creating new.'
-            log_msg(msg)
             shutil.rmtree(jobpath)
             make_dirs(jobpath, nfiles, start, nsubjobs)
+            msg += 'Removing old dir and creating new.'
         else:
             msg += 'Enter [new], [same] or [over] for dirtype in the parameters.card'
+            start_log(logfile, card)
             log_msg(msg)            
             call_exit(1)
+        start_log(logfile, card)
+        log_msg(msg)
     else:
-        msg = 'Dir {0} does not exist.\n'.format(jobpath)
+        msg = 'Directory {0} does not exist.\n'.format(jobpath)
         if dirtype == 'new':
+            make_dirs(jobpath, nfiles, start, nsubjobs)
             start_log(logfile, card)
             msg += 'Creating necessary directory structure'
             log_msg(msg)
-            make_dirs(jobpath, nfiles, start, nsubjobs)
         elif dirtype == 'same' or dirtype == 'over':
             msg += 'Output directory was not found:\n{0}'.format(jobpath)
             msg += '\nChange parameters.card.'
@@ -139,19 +144,21 @@ def check_njobs(cmd, log):
         njobs = int(njobslog.read().splitlines()[0])
     return njobs
 
-def get_time(mode=None, sub=False):
+def get_time(mode=None):
     t0 = time.asctime( time.localtime(time.time()) )
-    msg = '\nCurrent time: {0}\n'.format(t0)
     if mode == 'start':
-        msg += 'Starting submit_jobs.py'
+        msg = '\nStarting submit_jobs.py:'
     elif mode == 'file':
-        msg += 'Starting input file {0}:\n{1}'
+        msg = '\n' + t0 + ' - Input file {0}: {1}'
     elif mode == 'isub':
-        msg += 'Starting subjob {0} for input file:\n{1}'
+        msg = 'Subjob {0}'
     elif mode == 'sleep':
-        msg += '{0} jobs already running. Sleeping for {1} minutes.'
+        msg = t0 + ' - {0} jobs already running. Sleeping for {1} minutes.'
     elif mode == 'end':
-        msg += 'Finish sending all the jobs!'
+        msg = '\n' + t0 + '\nFinish sending all the jobs! '
+        msg += 'Check job status with:\nqstat -a {0} | grep {1}\n'
+    elif mode == 'time':
+        msg = t0
     else:
         print('Unknown mode for get_time.')
         call_exit(1)

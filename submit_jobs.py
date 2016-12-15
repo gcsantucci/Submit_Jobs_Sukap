@@ -31,7 +31,7 @@ def send_jobs(card):
         hf.log_msg(hf.get_time(mode='file').format(i, infile))
         isub = 0
         while isub < int(nsubjobs):
-            hf.log_msg(hf.get_time(mode='isub').format(isub, infile))
+            hf.log_msg(hf.get_time(mode='isub').format(isub))
             currentjobs = hf.check_njobs(queue_cmd, queue_log)
             if currentjobs < maxjobs:
                 #hf.runfiTQun(ijob, jobname, path, isub, nevents)
@@ -43,7 +43,7 @@ def send_jobs(card):
                 time.sleep(60*sleeptime)
         if email and i % emailrate == emailrate-1:
             hf.send_email(hf.get_email().format(i, infile, email))
-    hf.log_msg(hf.get_time(mode='end'))
+    hf.log_msg(hf.get_time(mode='end').format(queue, user))
 
 def main():
     card = hf.get_card()
