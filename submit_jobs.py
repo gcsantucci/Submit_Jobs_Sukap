@@ -24,9 +24,11 @@ def send_jobs(card):
     # Create directory structure and log file:
     jobpath = hf.join_path(outpath, outdirname)
     logfile = hf.join_path(jobpath, jobname + '.log')
+    qsublog = hf.join_path(jobpath, 'qsub_jobs.log')
+    qsubtemp = hf.join_path(jobpath, 'qsub_temp.log')
     hf.check_dirs(outdirtype, jobpath, nfiles, startfile, nsubjobs, logfile, card)
 
-    queue_log = hf.join_path(jobpath, 'running_jobs_{0}.txt'.format(queue))
+    queue_log = hf.join_path(jobpath, 'njobs_{0}.txt'.format(queue))
     queue_cmd = ('qstat {0} | grep {1} | wc -l > ' + queue_log).format(queue, user)
 
     infiles = hf.get_infiles(inpath, ext, startfile, nfiles)
@@ -38,7 +40,8 @@ def send_jobs(card):
             currentjobs = hf.check_njobs(queue_cmd, queue_log)
             if currentjobs < maxjobs:
                 sendfile, jobfile = bf.prepare_job(infile, jobpath, jobname, i, isub, nevents, runfile, outfiles)
-                bf.send_job(queue, jobfile, sendfile)
+                bf.send_job(queue, jobfile, sendfile, qsubtemp)
+                bf.log_qsub(qsubtemp, qsublog)
                 if email and subrate > 0 and isub % subrate == subrate-1:
                     hf.send_email(hf.get_email(isub=True).format(i, infile, isub, email))
                 isub += 1
@@ -47,6 +50,7 @@ def send_jobs(card):
                 time.sleep(60*sleeptime)
         if email and i % emailrate == emailrate-1:
             hf.send_email(hf.get_email().format(i, infile, email))
+    hf.rm_qsublog(qsubtemp)
     hf.log_msg(hf.get_time(mode='end').format(queue, user))
 
 def main():

@@ -35,7 +35,16 @@ def prepare_job(infile, jobpath, jobname, i, isub, nevents, runfile, outfiles):
     jobfile = os.path.join(outpath, jobname+'.log')
     return sendfile, jobfile
 
-def send_job(queue, jobfile, sendfile):
-    runcmd = 'qsub -q {0} -eo -lm 3gb -o {1} {2}'.format(queue, jobfile, sendfile)
-    print runcmd
+def send_job(queue, jobfile, sendfile, qsubtemp):
+    runcmd = 'qsub -q {0} -eo -lm 3gb -o {1} {2} > {3}'.format(queue, jobfile, sendfile, qsubtemp)
     os.system(runcmd)
+
+def log_qsub(qsubtemp, qsublog):
+    with open(qsubtemp, 'r') as qsub:
+        for line in qsub:
+            line = line.strip().split()
+            number = line[-2]
+            break
+    with open(qsublog, 'a') as jobs:
+        jobs.write(number + '\n')
+
