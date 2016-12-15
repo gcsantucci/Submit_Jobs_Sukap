@@ -127,6 +127,12 @@ def make_dirs(jobpath, nfiles, start, nsubjobs):
             isub = os.path.join(ijob, str(j))
             os.mkdir(isub)
 
+def is_runfile(runfile):
+    if not os.path.isfile(runfile):
+        msg = 'Run file not found! Check parameters card:\n{0}'.format(runfile)
+        log_msg(msg)
+        call_exit(1)
+
 def number_jobs(maxjobs, nsubjobs, nfiles):
     if maxjobs == -1:
         maxjobs = nsubjobs * nfiles

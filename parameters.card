@@ -13,10 +13,10 @@ ext = .zbs
 nfiles = 1
 
 # First input file number:
-startfile = 100
+startfile = 374
 
 # Number of parts in which each input file will be divided (at least 1):
-nsubjobs = 2
+nsubjobs = 1
 
 # Number of events in each sub part:
 nevents = 1
@@ -25,7 +25,7 @@ nevents = 1
 outpath = /disk2/usr5/santucci/PDK/MC_events/
 
 # Name of the directory where the output files will be written:
-outdirname = test_submit
+outdirname = test_outfiles
 
 # Enter new, same or over for the type of the output directory:
 outdirtype = new
@@ -52,7 +52,10 @@ user = santucci
 maxjobs = 205
 
 # Duration of time (minutes) to wait until a job is finished in case the maxjobs has been reached:
-sleeptime = 20
+sleeptime = 5
 
 # Run file :
 runfile = /home/santucci/PDK/submit_jobs/RunJob.csh
+
+# Output files:
+outfiles = _fq.zbs _fq.hbk _miura.hbk

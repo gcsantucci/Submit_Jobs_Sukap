@@ -34,12 +34,17 @@ strparams = [
     'runfile'
 ]
 
+lstparams = [
+    'outfiles'
+]
+
 default_card = '/home/santucci/PDK/submit_jobs/parameters.card'
 
 def get_params(card):
     infile = open(card, 'r')
     return_params = []
     return_intparams = []
+    return_lstparams = []
     for line in infile:
         line = line.strip().split()
         if '#' in line:
@@ -52,4 +57,7 @@ def get_params(card):
             if param in line:
                 return_intparams.append(int(line[-1]))
                 continue
-    return return_params, return_intparams
+        for param in lstparams:
+            if param in line:
+                return_lstparams.append(line[2:])
+    return return_params, return_intparams, return_lstparams

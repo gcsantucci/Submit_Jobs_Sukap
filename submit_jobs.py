@@ -13,11 +13,13 @@ import bash_files as bf
 from parameters import get_params
 
 def send_jobs(card):
-    strparams, intparams = get_params(card)
+    strparams, intparams, lstparams = get_params(card)
 
     nfiles, startfile, nsubjobs, nevents, emailrate, subrate, maxjobs, sleeptime = intparams
     inpath, ext, outpath, outdirname, outdirtype, jobname, email, queue, user, runfile = strparams
+    outfiles = lstparams[0]
     maxjobs = hf.number_jobs(maxjobs, nsubjobs, nfiles)
+    hf.is_runfile(runfile)
 
     # Create directory structure and log file:
     jobpath = hf.join_path(outpath, outdirname)
@@ -35,7 +37,7 @@ def send_jobs(card):
             hf.log_msg(hf.get_time(mode='isub').format(isub))
             currentjobs = hf.check_njobs(queue_cmd, queue_log)
             if currentjobs < maxjobs:
-                sendfile, jobfile = bf.prepare_job(infile, jobpath, jobname, i, isub, nevents, runfile)
+                sendfile, jobfile = bf.prepare_job(infile, jobpath, jobname, i, isub, nevents, runfile, outfiles)
                 bf.send_job(queue, jobfile, sendfile)
                 if email and subrate > 0 and isub % subrate == subrate-1:
                     hf.send_email(hf.get_email(isub=True).format(i, infile, isub, email))

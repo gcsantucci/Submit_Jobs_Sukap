@@ -8,18 +8,9 @@ def get_outpath(jobpath, i, isub):
 def get_outfile(jobpath, jobname, i, isub):
     return os.path.join(jobpath, '{0}/{1}/{2}_{0}_{1}'.format(i, isub, jobname))
 
-def get_outfiles(outfile):
-    outfiles = []
-    outfiles.append(outfile + '_fq.zbs')
-    outfiles.append(outfile + '_fq.hbk')
-    outfiles.append(outfile + '_miura.hbk')
-    return ' '.join(outfiles)
-
-def is_runfile(runfile):
-    if os.path.isfile(runfile):
-        return runfile
-    else:
-        hf.call_exit(1)
+def get_outfiles(outfile, outfiles):
+    return_outfiles = [outfile+outf for outf in outfiles]
+    return ' '.join(return_outfiles)
 
 def write_sendjob(outpath, runcmd):
     errstr = '#@$-o ' + outpath + '/test.err'
@@ -34,13 +25,12 @@ def write_sendjob(outpath, runcmd):
         bash.write(os.linesep)
     return send_file
 
-def prepare_job(infile, jobpath, jobname, i, isub, nevents, runfile):
+def prepare_job(infile, jobpath, jobname, i, isub, nevents, runfile, outfiles):
     outpath = get_outpath(jobpath, i, isub)
     outfile = get_outfile(jobpath, jobname, i, isub)
-    outfiles = get_outfiles(outfile)
-    run_file = is_runfile(runfile)
+    outfiles = get_outfiles(outfile, outfiles)
     skip = isub*nevents
-    sendcmd = 'source {0} {1} {2} {3} {4}'.format(run_file, infile, nevents, skip, outfiles)
+    sendcmd = 'source {0} {1} {2} {3} {4}'.format(runfile, infile, nevents, skip, outfiles)
     sendfile = write_sendjob(outpath, sendcmd)
     jobfile = os.path.join(outpath, jobname+'.log')
     return sendfile, jobfile
