@@ -16,7 +16,7 @@ def send_jobs(card):
     strparams, intparams, lstparams = get_params(card)
 
     nfiles, startfile, nsubjobs, nevents, emailrate, subrate, maxjobs, sleeptime = intparams
-    inpath, ext, outpath, outdirname, outdirtype, jobname, email, queue, user, runfile = strparams
+    inpath, ext, outpath, outdirname, outdirtype, jobname, runfile, email, queue, user = strparams
     outfiles = lstparams[0]
     maxjobs = hf.number_jobs(maxjobs, nsubjobs, nfiles)
     hf.is_runfile(runfile)

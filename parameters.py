@@ -28,10 +28,10 @@ strparams = [
     'outdirname', 
     'outdirtype', 
     'jobname',
+    'runfile',
     'email',
     'queue',
-    'user',
-    'runfile'
+    'user'
 ]
 
 lstparams = [
