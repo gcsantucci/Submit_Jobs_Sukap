@@ -10,22 +10,22 @@ inpath = /disk2/atmpd5/sk4_dst/apr16/fc_mc/zbs_fQv5r0_ntag16c/
 ext = .zbs
 
 # Number of input files you wanna run on:
-nfiles = 1
+nfiles = 2
 
 # First input file number:
-startfile = 374
+startfile = 9
 
 # Number of parts in which each input file will be divided (at least 1):
-nsubjobs = 1
+nsubjobs = 2
 
 # Number of events in each sub part:
-nevents = 1
+nevents = 3000
 
 # Full path where the output files will be written:
-outpath = /disk2/usr5/santucci/PDK/MC_events/
+outpath = /disk2/usr5/user/outputs
 
 # Name of the directory where the output files will be written:
-outdirname = test_outfiles
+outdirname = test
 
 # Enter new, same or over for the type of the output directory:
 outdirtype = new
@@ -33,29 +33,29 @@ outdirtype = new
 # Common name for the output files:
 jobname = test
 
+# Run file:
+runfile = /home/santucci/PDK/submit_jobs/RunJob.csh
+
+# Output files:
+outfiles = _fq.zbs _fq.hbk
+
 # User's email:
-email = gabrielsantucci@gmail.com
+email = user@mail.com
 
 # Rate at which emails will be sent:
-emailrate = 1
+emailrate = 2
 
 # Rate of emails for every input file at subpart = subrate:
-subrate = 1
+subrate = 0
 
 # Queue name to send the jobs:
 queue = all
 
 # Name of the user in the queue:
-user = santucci
+user = username
 
 # Maximum number of jobs running in the queue simultaneously (-1 for sending all jobs without restriction):
-maxjobs = 205
+maxjobs = 200
 
 # Duration of time (minutes) to wait until a job is finished in case the maxjobs has been reached:
-sleeptime = 5
-
-# Run file :
-runfile = /home/santucci/PDK/submit_jobs/RunJob.csh
-
-# Output files:
-outfiles = _fq.zbs _fq.hbk _miura.hbk
+sleeptime = 10
