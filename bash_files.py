@@ -43,8 +43,8 @@ def log_qsub(qsubtemp, qsublog):
     with open(qsubtemp, 'r') as qsub:
         for line in qsub:
             line = line.strip().split()
-            number = line[-2]
+            jobID = line[-2]
             break
     with open(qsublog, 'a') as jobs:
-        jobs.write(number + '\n')
-
+        jobs.write(jobID + '\n')
+    return jobID

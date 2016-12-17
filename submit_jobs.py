@@ -36,12 +36,12 @@ def send_jobs(card):
         hf.log_msg(hf.get_time(mode='file').format(i, infile))
         isub = 0
         while isub < int(nsubjobs):
-            hf.log_msg(hf.get_time(mode='isub').format(isub))
             currentjobs = hf.check_njobs(queue_cmd, queuetemp)
             if currentjobs < maxjobs:
                 sendfile, jobfile = bf.prepare_job(infile, jobpath, jobname, i, isub, nevents, runfile, outfiles)
                 bf.send_job(queue, jobfile, sendfile, qsubtemp)
-                bf.log_qsub(qsubtemp, qsublog)
+                jobID = bf.log_qsub(qsubtemp, qsublog)
+                hf.log_msg(hf.get_time(mode='isub').format(isub, jobID))
                 if email and subrate > 0 and isub % subrate == subrate-1:
                     hf.send_email(hf.get_email(isub=True).format(i, infile, isub, email))
                 isub += 1

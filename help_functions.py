@@ -161,7 +161,7 @@ def get_time(mode=None):
     elif mode == 'file':
         msg = '\n' + t0 + ' - Input file {0}: {1}'
     elif mode == 'isub':
-        msg = 'Subjob {0}'
+        msg = 'Subjob {0} - job ID = {1}'
     elif mode == 'sleep':
         msg = t0 + ' - {0} jobs already running. Sleeping for {1} minutes.'
     elif mode == 'end':
