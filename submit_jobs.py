@@ -10,14 +10,14 @@ Dec 2016
 
 import help_functions as hf
 import bash_files as bf
-from parameters import get_params
+from parameters import get_params, gen_params
 
 def send_jobs(card):
     strparams, intparams, lstparams = get_params(card)
 
     nfiles, startfile, nsubjobs, nevents, emailrate, subrate, maxjobs, sleeptime = intparams
     inpath, ext, outpath, outdirname, outdirtype, jobname, runfile, email, queue, user = strparams
-    outfiles = lstparams[0]
+    outfiles = lstparams
     maxjobs = hf.number_jobs(maxjobs, nsubjobs, nfiles)
     hf.is_runfile(runfile)
 
@@ -27,6 +27,9 @@ def send_jobs(card):
     qsublog = hf.join_path(jobpath, jobname+'_running_jobs.log')
     qsubtemp = hf.join_path(jobpath, jobname+'qsub.temp')
     hf.check_dirs(outdirtype, jobpath, nfiles, startfile, nsubjobs, logfile, card)
+    hf.log_msg('\nUsing parameters:')
+    for param in gen_params():
+        hf.log_msg('{0} = {1}'.format(param, eval(param)) )
 
     queuetemp = hf.join_path(jobpath, 'njobs_{0}.txt'.format(queue))
     queue_cmd = ('qstat {0} | grep {1} | wc -l > ' + queuetemp).format(queue, user)

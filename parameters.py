@@ -38,6 +38,8 @@ lstparams = [
     'outfiles'
 ]
 
+parameters = intparams + strparams + lstparams
+
 default_card = '/home/santucci/PDK/submit_jobs/parameters.card'
 
 def get_params(card):
@@ -60,4 +62,9 @@ def get_params(card):
         for param in lstparams:
             if param in line:
                 return_lstparams.append(line[2:])
-    return return_params, return_intparams, return_lstparams
+    return return_params, return_intparams, return_lstparams[0]
+
+
+def gen_params():
+    for param in parameters:
+        yield param
